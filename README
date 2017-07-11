@@ -1,0 +1,18 @@
+Buidling customize libusb and binary against to android NDK.
+===========================================================
+
+1) setup NDK_PATH
+   export NDK_PATH=/file/to/ndk
+2) build script
+   1.  build libusb standalone
+       ./build.sh libusb
+   2.  build binary standalone
+       ./build.sh sources
+   3.  build all
+       ./build.sh all
+   4.  cleanup
+       ./build.sh clean
+   5. pack all and upload
+       ./build.sh pack
+
+
