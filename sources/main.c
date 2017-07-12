@@ -1,6 +1,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <libusb/libusb.h>
+#include <errno.h>
 #include "usbwrapper.h"
 
 #define LIBUSB_PATH "/data/libusb1.0.so"
@@ -29,9 +30,9 @@ static void PrintDevs(libusb_device **paDevs, struct USBWrapper *psUsbWrapper)
 int main(int argc, char **argv)
 {
 	struct USBWrapper sUsbWrapper;
-    libusb_device **paDevs;
-    libusb_context *ctx;
-    ssize_t cnt;
+	libusb_device **paDevs;
+	libusb_context *ctx;
+	ssize_t cnt;
 	int err;
 
 	err = GetLibUsb(&sUsbWrapper, LIBUSB_PATH);
@@ -41,25 +42,27 @@ int main(int argc, char **argv)
 		goto err_out;
 	}
 
-    err = sUsbWrapper.init(&ctx);
-    if(err)
+	err = sUsbWrapper.init(&ctx);
+	if(err)
 	{
 		printf("Failed to init usb\n");
-        return 1;
-    }
+		goto err_out;
+	}
 
 	sUsbWrapper.set_debug(ctx, 3);
 
-    cnt = sUsbWrapper.get_device_list(ctx, &paDevs);
-    if(cnt < 0) {
+	cnt = sUsbWrapper.get_device_list(ctx, &paDevs);
+	if(cnt < 0)
+	{
 		printf("Failed to get devices\n");
-        return 1;
+		err = -ENOMEM;
+        goto err_out;
     }
 
 	PrintDevs(paDevs, &sUsbWrapper);
 
-    sUsbWrapper.free_device_list(paDevs, 1);
-    sUsbWrapper.exit(ctx);
+	sUsbWrapper.free_device_list(paDevs, 1);
+	sUsbWrapper.exit(ctx);
 
 err_out:
 	return err;
