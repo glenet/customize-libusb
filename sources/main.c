@@ -57,7 +57,7 @@ int main(int argc, char **argv)
 		printf("Failed to get devices\n");
 		err = -ENOMEM;
         goto err_out;
-    }
+	}
 
 	PrintDevs(paDevs, &sUsbWrapper);
 
